@@ -17,6 +17,32 @@ fontsize: 12pt
 ---
 
 
+\begin{centering}
+
+\Huge {\color{blue}{\textbf{Fundamentals of Statistical Analysis using R (FSTAR)}}}
+
+\vspace{3 cm}
+
+\Large {19th April 2022 - 13th May 2022}
+
+
+\vspace{3 cm}
+
+\Huge {\textbf{Project}}
+
+
+
+\vspace{9 cm}
+
+\includegraphics[width=0.20\linewidth]{Cambridge_Africa_logo.png}
+\includegraphics[width=0.24\linewidth]{cema_logo_final.png}
+\includegraphics[width=0.20\linewidth]{jkuat_logo.png}
+\includegraphics[width=0.20\linewidth]{pwani_uni.jpg}
+
+\end{centering}
+
+\clearpage
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
