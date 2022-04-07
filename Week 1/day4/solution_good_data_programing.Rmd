@@ -1,0 +1,78 @@
+---
+title: "Good data programming solution"
+author: "Ken Mwai"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    number_sections: false
+    theme: spacelab
+    highlight: tango
+includes:
+ css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### Data loading {.tabset .tabset-fade .tabset-pills}
+#### Task 1
+
+::: {.task}
+- Create a project folder with (data, code ,result , ... folders) 
+
+- Use the mtcars dataset within R and check the structure
+
+  - Take a first look at the data. Useful functions are  
+   `dim()`, `head()`, `str()` and `summary()`.
+   
+- Remember to use good programming approach
+:::
+
+#### Step 1
+
+- Create the data,results, code folders
+- Create an r_script and save it in the code folder
+
+#### Step 2 - R Script
+
+```{r step2}
+#----------------------------------------------
+## f_StaR Good programming skills
+## Author: Ken Mwai - April 2022
+#----------------------------------------------
+#----------------------------------------------
+# 0 - Load libraries 
+#----------------------------------------------
+library(stats)
+library(dplyr)
+#----------------------------------------------
+# 1 - Source Data
+#----------------------------------------------
+df1 <- mtcars
+
+#----------------------------------------------
+#' 2 - Dimension of the the data
+#' Shows the number of rows and columns
+#----------------------------------------------
+dim(df1)
+
+#----------------------------------------------
+#' 3 - The first few observations of the data
+#----------------------------------------------
+head(df1)
+
+#----------------------------------------------
+#' 3 - The data structure
+#----------------------------------------------
+glimpse(df1)
+str(df1)
+
+#----------------------------------------------
+#' 3 - The summary statistics of the data
+#----------------------------------------------
+summary(df1)
+```
