@@ -1,0 +1,261 @@
+---
+title: "Good R Programming Practices"
+author: "Evans Mudibo, Hannah Kimingi and Rose Kigathi"
+date: "4/3/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This talk focuses on good coding practices in `r`
+
+"Any fool can write code that a computer can understand. Good programmers write code that humans can understand" ~ Martin Fowler, 2008
+
+Keeping our code as human-readable, automated, and compartmentalized as possible will help us spend less of our time debugging and more of our time communicating science
+
+
+# Good R Practices 
+
+Our discussion will focus mainly on following:
+
+- Descriptive
+- Consistent
+- Concise
+- Human-readable
+- Accessible
+
+
+### 1. Descriptive
+
+When choosing the names for data and variables in r (or any other software/program), you have to balance the needs to be concise, descriptive and consistent.
+
+As a rule *be short, but informative/meaningful*
+The name of files, variables, factors should be informative enough to help you easily associate it with the source. Vague names make it difficult to remember what the variable/ files were and thus eventually become useless.
+
+Some common naming conventions include camelCase/CamelCase where we use capital letters to mark breaks between words or snake_case where underscore is used to separate words.
+Do not use spaces in the names of files or variables, avoid special characters except hyphen **`-`**, underscore **`_`**, period/fullstop **`.`**. Special characters  (`$`, `@`, `%`, `#`, `&`, `*`, (, ), !, /, etc.) have other uses in `r` and other programming languages and are bound to cause errors. Similarly,  a variable name cannot start with a `number` or `operator signs`.
+
+Below is an example if good names for variables using the `CamelCase` and `snake_case`: 
+*Source:* https://datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/
+
+Good Name|          |Good Alternative           | Avoid                 |
+--------------------|---------------------------|-----------------------|
+Max_temp_C          | MaxTemp                   | Maximum Temperature   |
+Precipitation_mm    | Precipitation             | Precmm                |
+Mean_year_growth    | MeanYearGrowth            | Mean Growth/Year      |
+sex                 | Sex                       | M/F                   |
+weight              | Weight                    | w.                    |
+cell_type           | Cell_Type                 | Cell Type             |
+Observation_1       | FirstObservation          | 1st Obs               |
+|
+
+
+Since we’re focusing on *human readability*, you should go with whatever format works for you as long as you use it to build a **consistent** naming convention.
+
+#### RECAP: Assignment operator
+`<-` Is used to create objects in R. We store using `<-` or `=` operator, however the `<-` is recommended.
+
+##### Example of naming
+
+```{r}
+#Creating an object containing numbers
+example_1<- c(6,7,8,9,10)
+example_1
+mean(example_1)
+```
+
+When assigning names be careful not to use terms already existing in `r`
+For example mean is already a function in R and thus should be avoided.
+Therefore use the ? in `r`to test if a name already exists. For example
+`?mean`
+
+###  2. Consistent
+It is imperative to be consistent when coding. This enhances organization and is indeed one of the most important rules in data handling and programming
+
+Consistency enhances predictability, saves time- makes easier to work with code and data. So keep *same format* and do not change from one to another in a document. For example do not use different naming for categorical variable like `male` one time `M` another time then `Male` another. R is also case sensitive so please note `male` and `Male` are read as different things by `r`.
+
+### 3. Concise
+As a rule programming needs to be concise. Long coding and scripts make it more difficult to troubel shoot. Also decreases human readability. Thus make your code as short and precise as possible.
+If you can do it in one line of code, don't use a paragraph. This becomes important when we start writing our own functions or carrying out multiple tasks within a chunk of code.
+If your line is more than 80 words long as a rule this is too complex and should be broken down.
+
+### 4. Human-readable
+This refers to the ability of someone else to read and understand your code. It is important for reproducibility and often is quite helpful when you return to old data sets many years later.
+
+Therefore:
+
+- Write clearly
+- Well Commented
+- Text wrapping and visual layouts
+
+#### a) Write Clearly
+It is encouraged to use formats that are similar or read like to common spoken language usage and separates important code from distracting code.
+This enhances human readability
+
+#### b) Well commented
+
+`#` is used to indicate that the coming line of words are just comments thus R will not interpret them and won't be executed.
+
+Well commented code is vital, as it allows one to include information on data, packages use, keep track of decisions, what particular functions do, what variables are used and is key to helping other people see your thought process. 
+
+Also, comments allows us to track dependencies, changes, and developments in our code so we can save time debugging when things go wrong later
+
+Comments are : “Love letters to your future self” by Jon Peirce
+
+When commenting be clear and concise.
+
+```{r}
+# Adding two numbers in R/ Addition in R
+add_two_numbers <- 8+7 
+
+add_two_numbers
+```
+
+#### c) Text wrapping and visual layouts
+
+##### Indentation
+
+Arrange your code with line breaks and spacing to make it easy to read and scan for mistakes. This is called indentation. Makes line of code easier to read on the human eye. In `r` it is recommended to use two spaces
+
+R has a tidyverse package which performs this task through pipe, %>%
+
+Breaking up our code over several lines at the pipes `%>%` and commas between selected columns gives us a much cleaner code block that’s easier to navigate
+
+```{r}
+# using c() to create a vector of numbers stored in a variable called marks. Then compute the mean
+marks <- c(62, 50, 30, 56, 79, 52, 88) # variable assignment 
+marks_mean <- mean(marks) # find the mean
+marks_mean # call the variable called marks_mean which contains the mean mark
+```
+
+
+The above code can be broken down into steps using **%>%** to pipe the output of the left function in this example `c()` for vector into the hand function in here `mean()`. Remember to load a `tidyverse package`
+```{r}
+mean_marks <- c(62, 50, 30, 56, 79, 52, 88)  %>%
+  mean()
+mean_marks
+```
+
+## Examples
+
+##### snake_case
+```{r}
+my_town <- "Kilifi" # my_town is the variable name. It is in a snake_case format 
+
+my_town
+```
+
+##### CamelCase
+```{r}
+MyTown <- "Mombasa"
+
+MyTown
+
+#How would you create an object with your two favourite towns, Kilifi and Mombasa?
+
+```
+
+
+```{r}
+# Addition in R
+sum_1 <- 4+6+5
+sum_1
+```
+
+**Note** 
+- Make your variable as descriptive as possible
+- Notice the value we assigned  to our variables `my_town` and `MyTown` are enclosed in quotation marks while for sum variable are not enclosed. They are of *different data types in r*. 
+
+
+##### Practice own your own. 
+Assign  `Nairobi` to a variable called `my city`. Note there is a space in the variable name. What do you notice when you run your code?
+
+```{r}
+#my city <- "Nairobi"
+```
+
+
+
+##### Questions
+- What will happen when we remove the **#** in the code above?
+- Place the **#**  before you assignment 
+
+```{r}
+#add_two_numbers2 <- 3+7 #addition
+
+#add_two_numbers2
+```
+
+## 5. Accessibility and Visualization
+- Learn to use scripts consistently an well commented, these are already easy to share
+-As you grow, learn to use Rmarkdown that is a script that can be easily translated to word, pdf,html for ease of communication and sharing
+- Make sure the codes you used for your analysis are findable and accessible. This is important for reproducibility
+- Git and GitHub can used for documentation and archiving of your work
+- For visualization you should use colors that interpretable to everyone including color-blind individuals
+
+# Other practices
+- It is advisable to load your libraries before you start your work
+- Comment on the kind of analysis you are handing
+- Generate Rmarkdown to embed your codes and comments at ago
+- Don’t include space while naming your variables, files and directories/folders
+- Set your working directories using the **`setwd()`** function- to be introduced later.
+- We can use Tab key to auto-complete function calls, this will save you alot of typing and typos.
+- Before you perform any operation to your data, understand your data types and structures well.
+- press command and enter keys (for Mac users)- short cut to run your codes
+- press control and enter keys (for Windows/Linux users)- short cut to run your codes
+- press alt and `-` keys- short cut for variable assignment
+
+## Hands on practise
+
+**1.** Assign your name to a variable called `my name`. Use any naming of the conventions we discussed. What is the risk of of not enclosing your name in quotation marks? 
+
+**2.** Find the mean of the following numbers 6, 16, 89, 56, 79, 2, 198
+
+`Hint` 
+- create a variable to store the numbers
+- use %>% to pipe
+
+**3.** Find the difference of 13 from 4. How can you automate your code to perfomance difference of two numbers. Write lines of codes.
+
+**4.** Recode your own data, the variables e.t.c using the conventions learnt today
+
+## Write your customized functions
+
+- As we advance in using r, we’ll find ourselves having to do the same operation multiple times.
+
+- As a good practice it is not advisable to copy and paste the same code more than thrice. When you find yourself in such a situation you need to automate your analysis
+
+- Functions allow us to automate these kinds of repetitive tasks 
+
+- You can also use R shinny App once you get advanced skills in R
+
+***Note* writing function and R shinny App are advanced skills in R. It is important to first acquire the basic skills in r then advance and build on them.
+
+```{r}
+addition_two_numbers <- 5+9
+addition_two_numbers <- 18+7
+addition_two_numbers <- 30
+addition_two_numbers
+```
+
+Notice the above codes finds the sum of two numbers. However, we are required to repeat the same steps in the event we want to perform the same task more than once.
+The best idea is to automate our work, we do this by writing a function which we call. See the code below
+```{r}
+addition_two_numbers <- function(a,b){a+b}
+
+addition_two_numbers(2,19)
+addition_two_numbers(197,9972)
+```
+
+##### References
+https://lsw5077.github.io/shiny_workshop/RBestPractices.html
+
+https://the-turing-way.netlify.app/project-design/code-styling/code-styling-readability.html
+
+https://bookdown.org/marius_mather/Rad/tips-for-effective-r-programming.html
+
+https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989
+
