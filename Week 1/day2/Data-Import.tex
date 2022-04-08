@@ -1,0 +1,730 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  ignorenonframetext,
+]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usetheme[]{CambridgeUS}
+\usecolortheme{sidebartab}
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Importing data from different formats},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\newif\ifbibliography
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+\usepackage{caption}
+% Make caption package work with longtable
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Importing data from different formats}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{RECAP: Data Types / Classes}
+\protect\hypertarget{recap-data-types-classes}{}
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+Data Types & Stores\tabularnewline
+\midrule
+\endhead
+real & floating point numbers\tabularnewline
+integer & integers\tabularnewline
+complex & Complex numbers\tabularnewline
+factor & categorical data\tabularnewline
+character & strings\tabularnewline
+logical & TRUE or FALSe\tabularnewline
+NA & Missing\tabularnewline
+NULL & Empty\tabularnewline
+Function & Function type\tabularnewline
+-------------------- & ------------------------------\tabularnewline
+\bottomrule
+\end{longtable}
+
+\end{frame}
+
+\begin{frame}[fragile]{Vector}
+\protect\hypertarget{vector}{}
+
+\begin{itemize}
+\tightlist
+\item
+  A vector can only contain objects of the same class
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\FloatTok{5.3}\NormalTok{,}\DecValTok{6}\NormalTok{,}\OperatorTok{-}\DecValTok{2}\NormalTok{,}\DecValTok{4}\NormalTok{) }\CommentTok{# numeric vector}
+\NormalTok{b <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"one"}\NormalTok{,}\StringTok{"two"}\NormalTok{,}\StringTok{"three"}\NormalTok{) }\CommentTok{# character vector}
+\NormalTok{c <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{,}\OtherTok{TRUE}\NormalTok{,}\OtherTok{TRUE}\NormalTok{,}\OtherTok{FALSE}\NormalTok{,}\OtherTok{TRUE}\NormalTok{,}\OtherTok{FALSE}\NormalTok{) }\CommentTok{#logical vector}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Matrices}
+\protect\hypertarget{matrices}{}
+
+\begin{itemize}
+\tightlist
+\item
+  All columns in a matrix must have the same class(numeric, character,
+  etc.) and the same length. The general format is
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#mymatrix <- matrix(vector, nrow=r, ncol=c, byrow=FALSE,}
+\CommentTok{#dimnames=list(char_vector_rownames, char_vector_colnames)) }
+\CommentTok{#byrow=TRUE indicates that the matrix should be filled by rows}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Factors}
+\protect\hypertarget{factors}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Used to represent categorical data.
+\item
+  Can be unordered or ordered. -A factor is like an integer vector where
+  each integer has a label.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{  x <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"yes"}\NormalTok{, }\StringTok{"yes"}\NormalTok{, }\StringTok{"no"}\NormalTok{, }\StringTok{"yes"}\NormalTok{, }\StringTok{"no"}\NormalTok{))}
+\NormalTok{  x}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] yes yes no  yes no 
+## Levels: no yes
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{Missing Values}
+\protect\hypertarget{missing-values}{}
+
+\begin{itemize}
+\item
+  Missing values are represented by the symbol \textbf{NA} (not
+  available)
+\item
+  Impossible values (e.g., dividing by zero) are represented by the
+  symbol NaN (not a number)
+\item
+  Can be unordered or ordered. -A factor is like an integer vector where
+  each integer has a label.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{  x <-}\StringTok{ }\OtherTok{NA}
+ \CommentTok{# is.na(x) # returns TRUE of x is missing}
+\CommentTok{# mean(x, na.rm=TRUE) # exclude missing in functions}
+\CommentTok{# complete.cases() #returns the number of complete cases}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}{Data Frames}
+\protect\hypertarget{data-frames}{}
+
+\begin{itemize}
+\tightlist
+\item
+  More general than a matrix, has different columns and can have
+  different modes (numeric, character, factor, etc.)
+\item
+  Used to store tabular data
+\item
+  Can store data of different classes
+\item
+  \emph{read.table()} or \emph{read.csv()} -- used to load dataframes
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Create Data Frames}
+\protect\hypertarget{create-data-frames}{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{foo =} \DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{, }\DataTypeTok{bar =} \KeywordTok{c}\NormalTok{(T, T, F, F))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   foo   bar
+## 1   1  TRUE
+## 2   2  TRUE
+## 3   3 FALSE
+## 4   4 FALSE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{6}\NormalTok{,}\DecValTok{7}\NormalTok{,}\DecValTok{8}\NormalTok{,}\DecValTok{9}\NormalTok{)}
+\NormalTok{y <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"a"}\NormalTok{,}\StringTok{"b"}\NormalTok{,}\StringTok{"c"}\NormalTok{,}\StringTok{"d"}\NormalTok{,}\StringTok{"e"}\NormalTok{,}\StringTok{"f"}\NormalTok{,}\StringTok{"g"}\NormalTok{,}\StringTok{"h"}\NormalTok{,}\StringTok{"i"}\NormalTok{)}
+\NormalTok{df <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x=}\NormalTok{x, }\DataTypeTok{y=}\NormalTok{y)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   x y
+## 1 1 a
+## 2 2 b
+## 3 3 c
+## 4 4 d
+## 5 5 e
+## 6 6 f
+## 7 7 g
+## 8 8 h
+## 9 9 i
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{(df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "data.frame"
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}{Datasets}
+\protect\hypertarget{datasets}{}
+
+\begin{itemize}
+\tightlist
+\item
+  R works with different types of datasets
+\item
+  Base R functions \emph{read.table} , \emph{read.csv} and
+  \emph{read.delim} can read in data stored as text files, delimited by
+  \emph{almost anything}
+\item
+  Data from other stat packages can be read using \emph{foreign
+  package?} and \emph{Hmisc package} \newline \emph{read.xlsx(file,
+  sheetIndex=1) \#excel files} \newline \emph{read.dta(file)\# stata
+  files}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{.RDA Data}
+\protect\hypertarget{rda-data}{}
+
+\begin{itemize}
+\tightlist
+\item
+  R Data type
+\item
+  Can be created from other data sets -data \textless-
+  load(``profit.rda'') -Saving a data frame as an rda
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Save(data.frame, ``dataset.rda'')
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Examples: 1}
+\protect\hypertarget{examples-1}{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Reading data from SPSS using the package "foreign"}
+\KeywordTok{library}\NormalTok{(foreign)}
+\NormalTok{data1<-}\KeywordTok{read.spss}\NormalTok{(}\StringTok{"experim.sav"}\NormalTok{, }\DataTypeTok{to.data.frame=}\OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## re-encoding from CP1252
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    id    sex age               group fost1 confid1 depress1 fost2 confid2
+## 1   4   male  23 confidence building    50      15       44    48      16
+## 2  10   male  21 confidence building    47      14       42    45      15
+## 3   9   male  25        maths skills    44      12       40    39      18
+## 4   3   male  30        maths skills    47      11       43    42      16
+## 5  12   male  45 confidence building    46      16       44    45      16
+## 6  11   male  22        maths skills    39      13       43    40      20
+## 7   6   male  22 confidence building    32      21       37    33      22
+## 8   5   male  26        maths skills    44      17       46    37      20
+## 9   8   male  23 confidence building    40      22       37    40      23
+## 10 13   male  21        maths skills    47      20       50    45      25
+## 11 14   male  23 confidence building    38      28       39    37      27
+## 12  1   male  19        maths skills    32      20       44    28      25
+## 13 15   male  23        maths skills    39      21       47    35      26
+## 14  7   male  19        maths skills    36      24       38    32      28
+## 15  2   male  21 confidence building    37      29       50    36      30
+## 16 27 female  20        maths skills    41      16       45    40      14
+## 17 25 female  24        maths skills    38      14       42    37      14
+## 18 19 female  27        maths skills    42      15       49    41      13
+## 19 18 female  23 confidence building    44      13       39    39      20
+## 20 23 female  22        maths skills    32      22       39    31      18
+## 21 21 female  46        maths skills    39      21       44    40      19
+## 22 26 female  19 confidence building    42      13       43    38      20
+## 23 29 female  22        maths skills    37      28       33    38      22
+## 24 17 female  37        maths skills    41      29       39    40      22
+## 25 20 female  32 confidence building    43      17       47    36      26
+## 26 28 female  30 confidence building    46      20       38    40      28
+## 27 22 female  25 confidence building    30      24       45    28      28
+## 28 24 female  21 confidence building    33      12       50    29      20
+## 29 16 female  45 confidence building    40      22       45    30      35
+## 30 30 female  21 confidence building    39      21       34    36      30
+##    depress2 fost3 confid3 depress3 exam      mah_1      DepT1gp2      DepT2Gp2
+## 1        44    45      14       40   52  0.5699842 not depressed not depressed
+## 2        42    44      18       40   55  1.6594031 not depressed not depressed
+## 3        40    36      19       38   58  3.5404715 not depressed not depressed
+## 4        43    41      20       43   60  2.4542143 not depressed not depressed
+## 5        45    43      20       43   58  0.9443036 not depressed     depressed
+## 6        42    39      22       38   62  1.6257058 not depressed not depressed
+## 7        36    32      23       35   59  4.1744717 not depressed not depressed
+## 8        47    32      26       42   70  1.0261059     depressed     depressed
+## 9        37    40      26       35   60  1.7053103 not depressed not depressed
+## 10       48    46      27       46   70  3.0873214     depressed     depressed
+## 11       36    32      29       34   72  2.9140163 not depressed not depressed
+## 12       43    23      30       40   82  0.3469978 not depressed not depressed
+## 13       47    35      30       47   79  1.5886241     depressed     depressed
+## 14       35    30      32       35   80  1.5076582 not depressed not depressed
+## 15       47    34      34       45   90 10.2401804     depressed     depressed
+## 16       44    38      18       40   56  1.1776467     depressed not depressed
+## 17       40    35      19       39   53  1.0564668 not depressed not depressed
+## 18       49    40      20       44   59  3.8748910     depressed     depressed
+## 19       30    34      22       30   64  2.7101641 not depressed not depressed
+## 20       38    32      22       36   63  3.5488594 not depressed not depressed
+## 21       44    38      23       44   64  0.5007192 not depressed not depressed
+## 22       39    36      23       37   63  1.4739118 not depressed not depressed
+## 23       33    36      26       32   67  9.1295758 not depressed not depressed
+## 24       40    40      27       40   71  6.2065842 not depressed not depressed
+## 25       45    34      28       42   73  1.7190981     depressed     depressed
+## 26       30    37      29       29   80  1.5015533 not depressed not depressed
+## 27       40    25      30       38   83  1.9240376     depressed not depressed
+## 28       48    25      30       50   85  7.5576411     depressed     depressed
+## 29       40    25      32       42   78  1.1884922     depressed not depressed
+## 30       30    30      32       32   84  6.0455901 not depressed not depressed
+##         DepT3gp2
+## 1  not depressed
+## 2  not depressed
+## 3  not depressed
+## 4  not depressed
+## 5  not depressed
+## 6  not depressed
+## 7  not depressed
+## 8  not depressed
+## 9  not depressed
+## 10     depressed
+## 11 not depressed
+## 12 not depressed
+## 13     depressed
+## 14 not depressed
+## 15     depressed
+## 16 not depressed
+## 17 not depressed
+## 18 not depressed
+## 19 not depressed
+## 20 not depressed
+## 21 not depressed
+## 22 not depressed
+## 23 not depressed
+## 24 not depressed
+## 25 not depressed
+## 26 not depressed
+## 27 not depressed
+## 28     depressed
+## 29 not depressed
+## 30 not depressed
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{Examples: 2}
+\protect\hypertarget{examples-2}{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Reading data from STATA using the package "foreign"}
+\NormalTok{data2<-}\KeywordTok{read.dta}\NormalTok{(}\StringTok{"cr4.dta"}\NormalTok{)}
+\NormalTok{data2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     y a order
+## 1   4 1     1
+## 2   6 1     2
+## 3   3 1     3
+## 4   3 1     4
+## 5   1 1     5
+## 6   3 1     6
+## 7   2 1     7
+## 8   2 1     8
+## 9   4 2     1
+## 10  5 2     2
+## 11  4 2     3
+## 12  3 2     4
+## 13  2 2     5
+## 14  3 2     6
+## 15  4 2     7
+## 16  3 2     8
+## 17  5 3     1
+## 18  6 3     2
+## 19  5 3     3
+## 20  4 3     4
+## 21  3 3     5
+## 22  4 3     6
+## 23  3 3     7
+## 24  4 3     8
+## 25  3 4     1
+## 26  5 4     2
+## 27  6 4     3
+## 28  5 4     4
+## 29  6 4     5
+## 30  7 4     6
+## 31  8 4     7
+## 32 10 4     8
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{Export to csv}
+\protect\hypertarget{export-to-csv}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \emph{write.csv} to export data frames
+\end{itemize}
+
+\begin{verbatim}
+
+write.csv(Your DataFrame,"Path to export the DataFrame")
+File Name.csv", row.names = FALSE)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{write.csv}\NormalTok{(data2,}\StringTok{"cr4.csv"}\NormalTok{, }\DataTypeTok{row.names =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Importing data from excel, csv}
+\protect\hypertarget{importing-data-from-excel-csv}{}
+
+-This is the most common format we use -Data files saved in excel can be
+saved in the several formats:
+
+\begin{verbatim}
+.xlsx #Excel format -
+.csv  #comma seperate values
+.txt #tab delimited
+\end{verbatim}
+
+\begin{itemize}
+\item
+  data must always first be organized in the right format see- Broman
+  and Woo, 2017
+
+  Link:
+  \url{https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Example}
+\protect\hypertarget{example}{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{read.csv}\NormalTok{(}\StringTok{"cr4.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     y a order
+## 1   4 1     1
+## 2   6 1     2
+## 3   3 1     3
+## 4   3 1     4
+## 5   1 1     5
+## 6   3 1     6
+## 7   2 1     7
+## 8   2 1     8
+## 9   4 2     1
+## 10  5 2     2
+## 11  4 2     3
+## 12  3 2     4
+## 13  2 2     5
+## 14  3 2     6
+## 15  4 2     7
+## 16  3 2     8
+## 17  5 3     1
+## 18  6 3     2
+## 19  5 3     3
+## 20  4 3     4
+## 21  3 3     5
+## 22  4 3     6
+## 23  3 3     7
+## 24  4 3     8
+## 25  3 4     1
+## 26  5 4     2
+## 27  6 4     3
+## 28  5 4     4
+## 29  6 4     5
+## 30  7 4     6
+## 31  8 4     7
+## 32 10 4     8
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}{Paths}
+\protect\hypertarget{paths}{}
+
+\begin{itemize}
+\item
+  Note that when importing your data you must know where the file is
+\item
+  Helps you tell the computer where to find the data
+  \includegraphics{path.png}
+\item
+  Absolute path
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Paths}
+\protect\hypertarget{paths-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Types of paths
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Absolute path -fixed and things must always be in the location
+    specified
+  \item
+    Relative path- allows you to move entire folders and retain folder
+    structure
+  \end{itemize}
+\item
+  It is best to create workspace/ projects using Rstudio
+\item
+  This allows you to move folders and retain folder structure
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Importing using Absolute path}
+\protect\hypertarget{importing-using-absolute-path}{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# reading a txt file}
+\CommentTok{# read.table("D:/F-STAR/data/cr4.txt")}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# reading a excel file}
+\KeywordTok{library}\NormalTok{(readxl)}
+\KeywordTok{read_xlsx}\NormalTok{(}\StringTok{"cr4.xlsx"}\NormalTok{,}\DataTypeTok{sheet=}\DecValTok{1}\NormalTok{, }\DataTypeTok{col_names =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Importing using relative path}
+\protect\hypertarget{importing-using-relative-path}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Here use either the Rstudio Projects or set working directory
+  \emph{setwd} approach
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Set working directory}
+\CommentTok{# read_xlsx("D:/F-STAR/data/cr4.xlsx",sheet=1)}
+\KeywordTok{setwd}\NormalTok{(}\StringTok{"D:/F-STAR"}\NormalTok{)}
+\KeywordTok{read_xlsx}\NormalTok{(}\StringTok{"cr4.xlsx"}\NormalTok{,}\DataTypeTok{sheet=}\DecValTok{1}\NormalTok{,}\DataTypeTok{col_names =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\end{document}
