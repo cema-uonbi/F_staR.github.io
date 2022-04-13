@@ -1,0 +1,898 @@
+---
+title: "Data Management in R"
+author: "Henry Athiany"
+date: "`r Sys.Date()`"
+output:
+  beamer_presentation: default
+  ioslides_presentation: default
+  slidy_presentation: default
+subtitle: importing, cleaning, renaming, labelling, recoding, sorting, joining (merging, appending)
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+```
+
+
+## Gentle introduction: Iris dataset
+- The **Iris** flower dataset or Fisher’s **Iris data** was initially introduced by **Ronald Fisher** in his **1936** paper: *``The use of multiple measurements in taxonomic problems``*. 
+- The dataset contains three plant species (setosa, virginica, versicolor), and four features measured for each of the 50 samples. In total, we have 150 observaions in the dataset. 
+- It is one of the most famous multivariate dataset used for data mining, classification, clustering among others (see below).
+
+
+```{r, fig.align='center', out.width="60%", echo=FALSE}
+knitr::include_graphics(path="C:/Users/HP/OneDrive/alborada_RCourse/iris.png")
+```
+
+# Data cleaning
+## Data cleaning
+- An important process in data analysis
+- It involves transforming inaccurate raw data into reliable data useful for analysis
+- Improves data quality and overall reliability
+- Multiple R packages available for this task, e.g ``dyplr``
+- In data cleaning, one needs to have this in mind:
+  * Be familiar with the dataset to be cleaned (domain knowledge: **is it about sheep? malaria? datatype?**)
+  * Be aware of structural errors (**mislabeled variables, faulty data types, non-unique IDs, string inconsistencies**)
+  * Be aware of data irregularities (**invalid values -  no logical sense, outliers**)
+  * Think of how to deal with missing values: (**no single best way of dealing with this, but...**)
+  * Keep record of cleaning procedures: (**Good research is reproducible**)
+
+
+## Data cleaning
+We intent to use the **Iris dataset** to show all these steps involved in data cleaning
+
+> Poorly prepared data gives unreliable result - **Garbage  in, garbage out**
+
+## Load the iris dataset
+- Previously, we learnt on how we could import various sources of data into R (Excel, Stata, SAS e.t.c)
+- Base R has a package known as ``datasets``. It has the Iris dataset already
+- To view this, we use the code
+
+```{r echo=TRUE}
+# Load the datasets package to access the data 
+library(datasets)
+data(iris)
+#lets view the head of the iris dataset
+head(iris, n=3)
+```
+
+
+## Load the iris dataset
+- Notice the first three(3) observations of the dataset, and the variable names.
+- Next, let's open and view the ``csv`` file first in Ms Excel
+- Now, let's import the ``csv`` file that will be used for the training.
+- Name the imported dataset as ``iris.imported``, to avoid mixing names with the inbuilt dataset
+```{r echo=TRUE}
+library(readr)
+iris.imported <- read_csv("iris.csv", col_names = FALSE)
+```
+
+
+
+## Cleaning data
+- View the imported dataset (iris2)
+```{r echo=TRUE}
+iris2<-iris.imported 
+#keep original dataset intact, but create new datasets for cleaning
+head(iris2, n=3)
+```
+- We note that the variable names are X1,...,X5 and order of the variables changed
+- Also imported as **``A tibble: 6 x 5``**
+
+# Renaming
+
+## Renaming variables
+
+```{r echo=TRUE}
+# get the current variables' names
+names(iris2)
+#Name of variable number 4
+names(iris2)[4]
+#Rename the variables
+names(iris2)[names(iris2) == "X1"] <- "Species"
+names(iris2)[names(iris2) == "X2"] <- "Sepal.Length"
+names(iris2)[names(iris2) == "X3"] <- "Sepal.Width"
+names(iris2)[names(iris2) == "X4"] <- "Petal.Length"
+names(iris2)[names(iris2) == "X5"] <- "Petal.Width"
+names(iris2)
+```
+
+## Renaming (single) variables 
+- Alternatively;
+```{r echo=TRUE}
+library(reshape)
+iris3<-iris.imported
+#Rename the variables
+rename(iris3, c(X1 = "Species")) #rename one variable
+```
+
+## Renaming (several) variables
+- Alternatively;
+```{r echo=TRUE}
+rename(iris3, c(X2= "Sepal.Length", X3= "Sepal.Width", X4= "Petal.Length", X5= "Petal.Width")) #several variables
+```
+
+## Renaming variables
+```{r}
+names(iris3)
+head(iris3)
+```
+- **Ex:** try typing the command ``fix(iris3)`` at the command prompt and rename one of the variables. What's the danger of this approach?
+
+
+## Removing and adding variables
+```{r echo=TRUE}
+iris4<-iris.imported
+names(iris4)
+names(iris4) <- NULL
+names(iris4)
+names(iris4) <- c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")
+head(iris4)
+```
+
+# Deleting columns, rows and data values
+
+## Deleting column(s) by name
+Method I :
+
+- The most easiest way to drop columns is by using  ``subset()`` function
+```{r echo=TRUE}
+iris2<-iris.imported
+names(iris2)
+iris2_new = subset(iris2, select = -c(X4,X5))
+names(iris2_new)
+```
+
+## Delete column(s) by name
+Method II
+```{r}
+iris3<-iris.imported
+names(iris3)
+iris3_new = iris3[,!(names(iris3) %in% c("X2","X3"))]
+iris3_new
+```
+
+## Drop columns by column index numbers
+```{r}
+#drop variables in position 2-5
+names(iris4)
+iris4_new <- iris4[ -c(2:5) ]
+names(iris4_new)
+#Only one variable is left
+```
+- To this end, we have three new datasets
+  * iris2_new (3 variables)
+  * iris3_new (3 variables)
+  * iris4_new (1 variable)
+  
+## Exercises (drop or keep)
+1. Use the following sytax to keep the names
+  * Keep column by name:  ``iris4_new = iris4[c("X1","X2")]``
+  * Keep columns by column index number:  ``iris4_new <- iris4[c(2,4)]``
+2. Practice on how to Keep or Delete columns with ``dplyr`` package
+``library(dplyr)``
+  * then use the syntax: ``mydata2 = select(mydata, -1, -3:-4)``
+  
+
+## Keep or delete columns with ``dplyr`` package
+
+
+```{r echo=TRUE, eval=FALSE}
+iris5<-iris.imported
+# delete first, third and fourth column
+iris5.1 = select(iris5, -1, -3:-4)
+# delete named columns
+iris5.2 = select(iris5, -X1, -X2, -X3)
+# or
+iris5.3 = select(iris5, -c(X1, X2, X3))
+#or
+iris5.4 = select(iris5, -X1:-X3)
+# keep named columns
+iris5.5 = select(iris5, X1, X3:X4)
+
+```
+- All the four dataframes ``iris5.1 to iris5.4`` should be the same. Check!
+
+## Keep / drop columns by ``name pattern``
+
+```{r}
+# Keeping columns whose name starts with "S"
+iris4.s = iris4[,grepl("^S",names(iris4))]
+names(iris4.s)
+```
+- The ``grepl()`` function is used to search for matches to a pattern. In this case ``Se``.
+
+```{r}
+# Dropping columns whose name begin with the letter "S"
+iris4.s1 = iris4[,!grepl("*S",names(iris4))]
+names(iris4.s1)
+```
+
+# Data structure 
+
+## Structure of the dataset
+```{r}
+# Getting to know the stucture of the imported dataset
+iris.str<-iris.imported
+names(iris.str) <- c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")
+str(iris.str)
+```
+
+
+## Structure of the dataset
+- Notice that ``Species`` has been imported as character
+- We need to change it to ``Factor`
+```{r}
+iris.str<-iris.imported
+# getting the class of the vector
+class(iris.str$X1)
+iris.str$X1<-as.factor(iris.str$X1)
+class(iris.str$X1)
+str(iris.str)
+```
+
+# Subsetting (vectors, matrix, lists and dataframes)
+
+## Subsetting
+- We have several operators that one can use to extract subsets of R objects
+- For instance;
+  * ``[`` returns an object of the same class as the original; can be used to select
+more than one element 
+  * ``[[`` used to extract elements of a list or a data frame; it can only be used to
+extract a single element and the class of the returned object will not necessarily be
+a list or data frame
+  * ``$`` used to extract elements of a list or data frame by name
+  
+```{r}
+x <- c("a", "b", "c", "c", "d", "a")
+x[1];x[2] ;x[1:4]
+x[x > "a"]
+u <- x > "a"; u; x[u]
+```
+
+## Subsetting a matrix
+- To subset a matrix, you can use the usual way of indices (i,j)
+```{r}
+x <- matrix(1:9, 3, 3) #default, column wise
+x[1, 2] # try x[1, 2, drop = FALSE]
+x[2, 1]
+```
+
+Indices can also be missing.
+```{r }
+x[1, ] #try x[1, , drop = FALSE]
+x[, 2]
+```
+
+## Subsetting cases from a dataframe
+Now, let's use the Iris data to show the tricks
+
+- First get a summary of the variable of interest
+- This will also help in knowing the factor names
+```{r echo=TRUE}
+iris.str<-iris.imported
+names(iris.str) <- c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")
+iris.str$Species<-as.factor(iris.str$Species)
+summary(iris.str$Species)
+```
+
+## Subsetting cases from a dataframe
+```{r}
+names(iris.str) <- c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")
+# Get first few rows of each subset
+iris.str$Species<-as.factor(iris.str$Species)
+subset(iris.str, Species == "Setosa")[1:2,]
+subset(iris.str, Species == "Versicolor")[1:2,]
+#subset(iris.str, Species == "Virginica")[1:2,]
+
+```
+
+## Subsetting cases from a dataframe
+- Let's do the same for the inbuilt ``iris`` dataset
+```{r}
+subset(iris, Species == "setosa")[1:2,]
+subset(iris, Species == "versicolor")[1:2,]
+subset(iris, Species == "virginica")[1:2,]
+# run this then try again: iris <- as_tibble(iris)
+```
+
+#Variable and value labels
+
+## Variable labels
+- A variable label could be specified for any vector using ``var_label()``
+.
+```{r echo=TRUE}
+library(labelled)
+var_label(iris.str$Sepal.Length) <- "Length of sepal"
+```
+- It’s also possible to add a variable label to several columns of a data frame using a named list.
+```{r echo=TRUE}
+#var_label(iris) <- list(Petal.Length = "Length of petal", Petal.Width = "Width of Petal")
+var_label(iris.str) <- list(Petal.Length = "Length of petal", Petal.Width = "Width of Petal")
+var_label(iris$Petal.Width)
+```
+
+## Variable labels
+```{r echo=TRUE}
+var_label(iris.str)
+```
+- in RStudio, use ``View(iris.str)`` to display the variable labels in the data viewer
+
+## Variable labels
+
+- To remove a variable label, use NULL.
+
+```{r echo=TRUE}
+var_label(iris.str$Sepal.Length) <- NULL
+```
+- To display and search through variable names and labels with  ``look_for()``
+```{r echo=TRUE}
+look_for(iris.str)
+```
+## Variable labels
+```{r echo=TRUE}
+look_for(iris.str, "Set")
+look_for(iris.str, details = FALSE)
+```
+
+# Deduplicates
+
+### Find and drop duplicate elements
+```{r echo=TRUE}
+#Given the following vector:
+x <- c(1, 1, 4, 5, 4, 6, 6, 2,3,4)
+#To find the position of duplicate elements in x, use this:
+duplicated(x)
+#Extract duplicate elements:
+x[duplicated(x)]
+# To remove duplicated elements
+x[!duplicated(x)]
+```
+
+## Deduplicates: dataframe
+- check for duplicates, we can use the base R function ``duplicated()``, which will return a logical vector telling us which rows are duplicate rows
+```{r echo=TRUE}
+suppressPackageStartupMessages(library(tidyverse))
+iris.dup<-iris %>% slice(1:3)
+iris.dup = subset(iris.dup, select = -c(Sepal.Length,Sepal.Width) )
+iris.dup
+iris.dup %>% distinct()
+```
+
+## Duplicates: dataframe (removing duplicates)
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+iris.dup<-iris %>% slice(1:3)
+iris.dup = subset(iris.dup, select = -c(Sepal.Length,Sepal.Width) )
+iris.dup
+#with duplicated() function
+iris.dup <- iris.dup[!duplicated(iris.dup$Petal.Length), ]
+iris.dup
+#with distinct() function
+iris.dup <- iris.dup %>% distinct(Petal.Length, .keep_all = TRUE)
+```
+
+## Extract unique elements
+```{r}
+#Given the following vector:
+x <- c(1, 1, 4, 5, 4, 6)
+# You can extract unique elements as follow:
+unique(x)
+# It’s also possible to apply unique() on a data frame, +
+#for removing duplicated rows as follow:
+suppressPackageStartupMessages(library(tidyverse))
+iris.dup<-iris %>% slice(1:3)
+iris.dup = subset(iris.dup, select = -c(Sepal.Length,Sepal.Width) )
+unique(iris.dup)
+```
+
+# Recoding
+
+## Recoding a categorical variable to another categorical variable
+- We want to recode the factor variable Species. ``setosa`` will be recoded as ``set``, ``virginica`` to ``virg`` and ``versicolor`` to ``versi``
+- This can be done with the recode() function from the dplyr package:
+```{r echo=TRUE}
+suppressPackageStartupMessages(library(dplyr))
+iris.recod = subset(iris, select = -c(Sepal.Length,Sepal.Width) )
+#Getting to know the levels before recoding
+levels(iris.str$Species)
+iris.recod<-recode(iris.recod$Species, setosa = "set", virginica = "virg", versicolor = "versi")
+#levels after recoding
+levels(iris.recod)
+```
+
+
+## Categorize numeric data with ``cut()`` function
+```{r echo=TRUE, eval=FALSE}
+library(data.table)
+iris.str$iris.group <- cut(iris.str$Petal.Length, breaks = c(1, 4, 6, Inf),
+labels = c("small", "medium", "large"), include.lowest=TRUE)
+```
+
+- If a data value falls outside of the specified bounds, it’s categorized as ``NA``. 
+- The result of ``cut()`` is a factor, and you can see from the example that the factor levels are named after the bounds: ``str(iris.str$iris.group)``
+- What happens when we omit the part ``include.lowest=TRUE``?
+
+## Categorize numeric data with ``cut()`` function
+```{r echo=TRUE}
+iris.str$iris.group <- cut(iris.str$Petal.Length, breaks = c(1, 4, 6, Inf),
+labels = c("small", "medium", "large"), include.lowest=TRUE)
+#Drop few variables to view full list
+iris.str= iris.str[,!grepl("*Se",names(iris.str))]
+head(iris.str, n=1)
+```
+
+- You can also categorise using the following functions: ``discretize()``, ``group_var()`` and `` frq()`` amongst others
+
+# Let's take a 10 min break
+
+# Sorting
+
+## Sorting data
+- R has a function called **``sort``** that is used to sort data in either ascending or descending order,
+- The variable by which you sort can be a **numeric, string or factor** variable,
+- We also have some options on how missing values are handled:  they can be listed **first, last or removed**,
+- We use our ``iris.str`` dataset to show this.
+
+## Sorting data 
+```{r echo=TRUE}
+iris.str[1:5, ] #please note the arguments in the square brackets
+sort(iris.str$Petal.Width) 
+```
+
+## Sorting data 
+```{r echo=TRUE}
+iris.str[1:5, ] 
+```
+- Data still the same as above, not what we anticipated
+- Variable ``Petal.Length`` sorted independent of the dataframe
+- In most applications, we use the **order** function and not the **sort** function to sort data in a data frame
+
+## Sorting data
+```{r echo=TRUE}
+sorted.iris.str <- iris.str[order(iris.str$Petal.Width) , ]
+sorted.iris.str[1:5, ]
+```
+
+## Sorting data
+- We can also sort the data frame by more than one variable, say ``Species`` then ``Petal.Length``
+```{r echo=TRUE}
+#sorted.iris.str <- iris.str[order(iris.str$Species,iris.str$Petal.Length), ]
+sorted.iris.str <- iris.str[order(iris.str$Species,iris.str$Petal.Length), ]
+sorted.iris.str[1:5, ]
+```
+
+## Sorting data: descending
+- We can also sort in the reverse order by using the (-) before the variable
+```{r echo=TRUE}
+sorted.iris.str <- iris.str[order(iris.str$Species,-(iris.str$Petal.Length)), ]
+sorted.iris.str[1:5, ]
+```
+- How do we handle **ties** in the dataset?
+
+## Sorting data: descending
+- What is different in this case?
+```{r echo=TRUE}
+sorted.iris.str <- iris.str[order(iris.str$Petal.Length,-(iris.str$Petal.Width)), ]
+sorted.iris.str[5:10, ]
+```
+- Sorted by first variable but because of ties, second variable sorted in descending order
+
+# Missing values
+
+## Missing values
+
+Missing values are denoted by NA or NaN for undefined mathematical operations.
+
+-  ``is.na()`` is used to test objects if they are NA
+-  ``is.nan()`` is used to test for NaN
+-  ``NA`` values have a class also, so there are integer NA, character NA, etc.
+-  A ``NaN`` value is also NA but the converse is not true
+
+## Missing values
+```{r}
+x <- c(1, 2, NA, 10, 3)
+is.na(x)
+is.nan(x)
+x <- c(1, 2, NaN, NA, 4)
+is.na(x)
+is.nan(x)
+
+```
+- lets get back to our dataset
+
+## Handling missing data: ``NA``
+- Note that missing data are denoted as ``NA`` in R, regardless of the type of variable (even in numeric variables)
+- Since we don't have missing observations, let's create some for this exercise using the variable ``Petal.Width``
+```{r echo=TRUE}
+iris.str$Petal.Width[2:5] <- NA
+iris.str[1:5, ]
+```
+
+## Sorting data with missing values
+- We can sort the data frame such that the missing data are at the top, the bottom, or deleted from the frame
+```{r echo=TRUE}
+iris.str$Petal.Width[2:5] <- NA
+iris.str <- iris.str[order(iris.str$Petal.Width, na.last=FALSE) , ]
+head(iris.str)
+```
+
+
+## Sorting data with missing values: descending
+- We can sort the data frame such that the missing data are at the top, the bottom, or deleted from the frame
+```{r echo=TRUE}
+iris.str$Petal.Width[2:5] <- NA
+iris.str <- iris.str[order(iris.str$Petal.Width, na.last=TRUE) , ]
+tail(iris.str)
+```
+
+## Handling missing values
+- Let's create a new variable called ``id`` and then give missing values
+```{r}
+iris.str$id <- 1:nrow(iris.str)
+iris.str$id[2:145] <- NA
+iris.str <- iris.str[order(iris.str$id, na.last=NA) , ]
+iris.str
+```
+
+
+# Dealing with dates in R
+
+## Creating date/times
+- There are three types of date/time data that refer to an instant in time:
+- A **date**. Tibbles print this as ``<date>``.
+- A **time** within a day. Tibbles print this as ``<time>``.
+- A **date-time** is a date plus a time: it uniquely identifies an instant in time (typically to the nearest second). Tibbles print this as ``<dttm>``. Elsewhere in R these are called POSIXctt.
+- Dates are represented as the number of days since 1970-01-01, with negative values for earlier dates.
+
+## Knowing the current date/time
+```{r}
+#lubridate is a package in R meant to deal with dates
+suppressPackageStartupMessages(library(lubridate))
+Sys.Date() #get current date
+today()  #get current date
+Sys.time() #get current time
+now() #get current time
+leap_year(2018) # check whether 2018 is a leap year
+```
+
+
+## Create and format dates
+- To create a ``Date`` object from a simple character string in R, you can use the ``as.Date()`` function. 
+- The character string has to obey a format that can be defined using a set of symbols (the examples correspond to 11 January, 1992):
+    * ``%Y:`` 4-digit year (1992)
+    * ``%y:`` 2-digit year (92)
+    * ``%m:`` 2-digit month (01)
+    * ``%d:`` 2-digit day of the month (11)
+    * ``%A:`` weekday (Wednesday)
+    * ``%a:`` abbreviated weekday (Wed)
+    * ``%B:`` month (January)
+    * ``%b:`` abbreviated month (Jan)
+
+## Create and format dates
+Lets  create the same Date object for the 11th day in January of 1992:
+
+```{r echo=TRUE}
+as.Date("1992-01-11")
+as.Date("Jan-11-92", format = "%b-%d-%y")
+as.Date("1 January, 1992", format = "%d %B, %Y")
+```
+
+
+## Dates formats
+```{r message=FALSE}
+library(readr)
+dates <- read_csv("dates.csv")
+dates
+#format(dates, format="%B %d %Y")
+f_col <- as.Date(dates$mdyy, format="%m/%d/%y")
+f_col
+typeof(f_col)
+as.numeric(f_col) # days since 1970
+weekdays(f_col) #inbuilt functions
+month(f_col)
+
+```
+
+
+## Date arithmetic
+- We can do some arithmetic with the dates as follows
+```{r}
+course_start    <- as.Date('2017-04-12')
+course_end      <- as.Date('2017-04-21')
+course_duration <- course_end - course_start
+course_duration
+```
+- Suppose course start date has been moved forward by 2 days and the start date given 3 more days, what would be the course duration?
+
+```{r}
+course_start    <- as.Date('2017-04-12')
+course_end      <- as.Date('2017-04-21')
+course_duration <- (course_end+3) - (course_start-2)
+course_duration
+```
+
+## lubtridate
+- Getting R to agree that your data contains the dates and times you think it does can be tricky
+- Package in R dealing specifically with times
+- Has in built functions for dealing with dates
+- Expands the type of mathematical operations that can be performed with date-time objects
+- Easy and fast parsing of date-times: ``ymd(), ymd_hms, dmy(), dmy_hms, mdy()``
+```{r}
+ymd(20201215)
+mdy("4/1/17")
+```
+
+## lubtridate
+- Simple functions to get and set components of a date-time, such as ``year(), month(), mday(), hour(), minute() and second():``
+```{r}
+bday <- dmy("14/10/2019")
+month(bday)
+wday(bday, label = TRUE)
+year(bday) <- 2016
+wday(bday, label = TRUE)
+```
+
+## lubridate
+- It introduces three new time span classes.
+- **durations**, which measure the exact amount of time between two points
+- **periods**, which accurately track clock times despite leap years, leap seconds, and day light savings time
+- **intervals**, a protean summary of the time information between two points
+
+## Example: Time intervals
+- Consider the followig
+```{r}
+arrive <- ymd_hms("2022-06-04 12:00:00", tz = "Pacific/Auckland")
+#arrive
+leave <- ymd_hms("2022-08-10 14:00:00", tz = "Pacific/Auckland")
+#leave
+```
+- Suppose I plan to travel for a conference in Auckland, and my stay will be from June 4, 2022 to August 10, 2022
+```{r}
+auckland <- interval(arrive, leave)
+auckland
+auckland <- arrive %--% leave
+auckland
+```
+
+## Example: Time intervals
+
+- My collaborator at the University of Auckland, Darren, will also be travelling to various conferences this year including the International Biometric Conference (IBC).
+- This will take him out of the country from July 20 until the end of August.
+- Will my visit overlap with  his travels? 
+```{r}
+ibc <- interval(ymd(20220720, tz = "Pacific/Auckland"), ymd(20220831, tz = "Pacific/Auckland"))
+ibc
+int_overlaps(ibc, auckland)
+```
+- Yes it will overlap
+
+## Example: Time intervals
+- What part of my visit will he be available?
+```{r}
+setdiff(auckland, ibc)
+```
+- Other functions that work with intervals include ``int_start, int_end, int_flip, int_shift, int_aligns, union, intersect, setdiff, and %within%.``
+
+# joining(merging, appending)
+## “merge” dataframes
+- In most cases, all of your data might not come from a single source. You might have to merge the data after you load it into R.
+- For instance, we previously created three different datasets named: ``iris2_new, iris3_new and iris4_new``
+- Suppose we want to join the datasets, what would we do? merge or append?
+
+## Merging dataframes
+- There are many ways to combine multiple dataframes, from the ``rbind`` function to left outer join to logical vector combinations.
+- However, to ensure that every key column and variable from your multiple datasets are combined correctly, there are three main techniques to consider;
+
+  * ``cbind()``: combining the columns of two data frames side-by-side
+  * ``rbind()``: stacking two data frames on top of each other, appending one to the other (appening)
+  * ``merge()``: joining two data frames using a common column
+
+
+## Using cbind() to merge two R data frames
+- lets consuder the two datasets previously created
+- We can see the first few observations of the sub-set dataset previously created
+```{r}
+head(iris2_new,2)
+head(iris3_new,2)
+```
+
+## Using cbind() to merge two R data frames
+```{r}
+# Using cbind(), we can merge the two as follows
+merged.cbind<-cbind(iris2_new, iris3_new)
+head(merged.cbind,2)
+```
+
+## Using rbind() to merge two R data frames
+```{r}
+#setosa rows
+seto <- iris2_new[iris2_new$X1 == "Setosa",]
+#random subsample of non-setosa rows of size n("Setosa") 
+nonseto <- iris2_new[sample(which(iris2_new$X1 != "Setosa"), size = length(which(iris2_new$X1 == "Setosa"))),]
+merged.rbind <- rbind(seto, nonseto)
+head(merged.rbind, 1)
+#tail(merged.rbind, 1)
+```
+- That was simple, right ? 
+- Well, the ``rbind()`` function works well when the structure of the data sets is exactly the same – same set of columns.
+
+## merge dataframes in R
+- Note that the main method of the R ``merge`` function is for ``data frames``.
+- However, merge is a generic function that can be also used with other objects (like vectors or matrices), but they will be coerced to data.frame class.
+- To illustrate this, we will consider two dataframes named;
+  * **df_1**, that represents the **id, name and monthly salary** of some employees of a company and 
+  * **df_2**, that shows the **id, name, age and position** of some employees
+
+## merge dataframes
+```{r}
+set.seed(01)
+employee_id <- 1:10
+employee_name <- c("Andrew", "Susan", "John", "Joe", "Jack",
+                   "Jacob", "Mary", "Kate", "Jacqueline", "Ivy")
+employee_salary <- round(rnorm(10, mean = 1500, sd = 200))
+employee_age <- round(rnorm(10, mean = 50, sd = 8))
+employee_position <- c("CTO", "CFO", "Administrative", rep("Technician", 7))
+df_1 <- data.frame(id = employee_id[1:8], name = employee_name[1:8],
+                   month_salary = employee_salary[1:8])
+df_2 <- data.frame(id = employee_id[-5], name = employee_name[-5],
+                   age = employee_age[-5], position = employee_position[-5])
+head(df_1,2); head(df_2,2)
+```
+
+## merge dataframes
+- In reality, all ids will be unique but the names can be repeated. 
+- We usualy have either an:
+  * Inner join (intersection)- most usual join of data sets 
+  * Full (outer) join(Union)
+  * Left (outer) join in R - matching main dataset
+  * Right (outer) join in R - matching ``using`` dataset
+  * Cross join - one to all other data points on either side
+  
+## merge (inner join)
+```{r}
+# merges by the common column names
+merge(x = df_1, y = df_2)
+merge(x = df_1, y = df_2, by = c("id", "name")) # Equivalent
+```
+
+## merge (full (outer) join)
+```{r}
+# merges all the columns of both data sets into one
+merge(x = df_1, y = df_2, all = TRUE)
+# to create a full outer join of the two data frames 
+# in R you have to set the argument all to TRUE
+```
+
+## merge (left (outer) join)
+```{r}
+# to create the join, set all.x = TRUE 
+merge(x = df_1, y = df_2, all.x = TRUE)
+# What would you say about employee of id=5?
+```
+
+## merge (right (outer), cross join and multiple dataframes)
+```{r }
+# Right join
+head(merge(x = df_1, y = df_2, all.y = TRUE),3)
+#cross join
+head(Merged <- merge(x = df_1, y = df_2, by = NULL),3)
+# merge several dataframes
+
+#merge(x, merge(y, z, all = TRUE), all = TRUE)
+```
+
+
+
+# Case study
+
+## Case study: Reshape, join, label, missing values
+- **Purpose**: To explain how data can be appended, variables encoded and recoded,data converted from wide to long format and vice-versa
+
+- There are three Ms Excel files named **reshape_example, reshape_example2 and reshap_example3** as shown below
+
+```{r, fig.align='center', out.width="65%", echo=FALSE}
+knitr::include_graphics(path="C:/Users/HP/OneDrive/alborada_RCourse/reshape.jpg")
+```
+
+## Data import and date formating
+
+```{r echo=TRUE}
+#importing an excel file 
+library(readxl)
+reshape_example <- read_excel("reshape_example.xlsx")
+typeof(reshape_example$date)
+#changing the date format to dd/mm/yyy
+reshape_example$date <- format(as.Date(reshape_example$date), "%d-%b-%Y")
+head(reshape_example, n=3)
+save(reshape_example, file = "reshape_example.RData")
+```
+
+## import the third dataset
+```{r echo=TRUE}
+#importing an excel file 
+library(readxl)
+reshape_example3 <- read_excel("reshape_example3.xlsx")
+typeof(reshape_example3$date)
+reshape_example3$date <- format(as.Date(reshape_example3$date), "%d-%b-%Y")
+save(reshape_example3, file = "reshape_example3.RData")
+```
+
+
+##  Append reshape_example3 to reshape_example1
+- When it comes to appending data frames, the ``rbind()`` and ``cbind()`` function comes to mind because they can concatenate the data frames horizontally and vertically.
+
+```{r echo=TRUE}
+
+appended_reshape <- rbind(reshape_example, reshape_example3)
+head(appended_reshape)
+```
+
+## recoding character variable to numeric
+
+```{r echo=TRUE}
+suppressPackageStartupMessages(library(dplyr))
+appended_reshape<- appended_reshape%>% mutate(tested2 = tested)
+appended_reshape$tested <- recode(appended_reshape$tested, no = 0, yes = 1)
+appended_reshape$tested2 <- recode(appended_reshape$tested2, no = 0, yes = 1)
+#table(appended_reshape$tested, appended_reshape$tested2)# tabulate the two variables
+#drop the original column
+appended_reshape$tested <- NULL
+#rename the new variable back to tested
+rename(appended_reshape, tested = tested2)
+```
+
+## recoding character variable to numeric
+
+```{r echo=TRUE}
+appended_reshape$result <- recode(appended_reshape$result, negative = 0, positive = 1)
+#Testing for Missing Values
+is.na(appended_reshape$result)
+#appended_reshape$tested2 <- NULL
+#appended_reshape$result <- NULL
+```
+
+## Reshape the data set from Long to Wide format
+- Within the reshape function, we have to specify the name of our data frame (i.e. data), the idvar argument (i.e. id), the timevar argument (i.e. Visit), and the direction (i.e. “wide”)
+
+```{r echo=TRUE}
+suppressPackageStartupMessages(library(reshape2))
+data_reshape1 <- reshape(data=appended_reshape,     
+                         idvar = "id",
+                         v.names = c("date", "result", "tested2"),
+                         timevar = "Visit",
+                         direction = "wide")
+```
+
+## Reshape the data set from Long to Wide format
+
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+#data_wide <- spread(appended_reshape, id, c("Visit", "date", "result", "tested2")
+
+#data_wide <- spread(appended_reshape,  key=Visit, value=date, result)
+
+appended_reshape %>%  pivot_wider(names_from = c(Visit,date,result), values_from =tested2)
+#data_wide
+reshape_example2 <- read_excel("reshape_example2.xlsx")
+#typeof(reshape_example2$id)
+merged<-merge(appended_reshape, reshape_example2)
+head(merged)
+```
+
+
+## Reshape the data set from Long to Wide format
+
+```{r}
+reshape_example2 <- read_excel("reshape_example2.xlsx")
+typeof(reshape_example2$id)
+merged<-merge(appended_reshape, reshape_example2)
+head(merged)
+#finally sort the data by id then visit
+merged[order(merged$id,merged$Visit), ]
+```
+
+
+# Thanks!

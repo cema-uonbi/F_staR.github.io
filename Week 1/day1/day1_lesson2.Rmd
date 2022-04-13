@@ -1,0 +1,624 @@
+---
+title: "Introduction to R and RStudio"
+author: "Henry Athiany"
+date: "`r Sys.Date()`"
+output:
+  beamer_presentation: default
+  ioslides_presentation: default
+  slidy_presentation: default
+subtitle: Session II
+in_header: header_pagenrs
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+```
+
+```{r, echo = F}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=90),tidy=TRUE)
+```
+
+## Data Objects in R
+Let's learn more about objects in R
+
+- We begin with a look at different kinds of data
+  * **Booleans**: Direct binary values: ``TRUE or FALSE`` in R.
+  * **Integers**: Whole numbers or number that can be written without fractional         component, represented by a fixed-length block of bits.
+  * **Characters**: fixed length block of bits with special coding.
+  * **Strings**: Sequence of characters.
+  * **Floating Point Numbers**: a fraction times an exponent, like $1.34x10^7$, however in R you would see ``1.34e7``.
+  * **Missing**: Na, NaN,
+  
+  
+## Data types
+- Doubles
+- Integers
+- Logical
+- Character
+- Factor: represents categorical data. Individual code of the factor is called **level** of the factor
+```{r echo=TRUE}
+sch_educ <- factor(c("primary","basic","secondary"))
+sch_educ
+levels(sch_educ)
+```
+
+## Finding type of data
+With types of data, R, has a built in way to help one determine the type that a
+certain piece of data is stored as. These consist of the following functions:
+
+- ``typeof()`` this function returns the type
+- ``is.typ()`` functions return Booleans for whether the argument is of the type ``typ``
+- ``as.typ()`` functions try to change the argument to type ``typ``
+
+```{r echo=TRUE}
+typeof(sch_educ)
+```
+
+## Examples
+```{r echo=TRUE}
+typeof(3)
+is.numeric(3)
+is.na(3)
+is.na(3/0)
+is.na(0/0)
+3/0
+0/0
+```
+
+# Scalars
+## Scalars in R
+- The simplest object type in R is a scalar
+- A scalar object is just a single value like a number or a name
+
+```{r echo=TRUE}
+scalar1 <- 'this is a scalar'
+scalar2 <- 104
+scalar3 <- 5 + 6.5    # evaluates to the single value 11.5
+scalar4 <- '4'
+typeof(scalar4)    # returns: character
+
+## what is this type?
+scalar5 <- TRUE
+typeof(scalar5)    # returns: logical
+
+```
+
+# Vectors
+## Vectors in R
+
+### What is a vector?
+- The fundamental data type in R is the vector.
+- It is a collection of one or more objects of the same type . We use
+``c()`` or ``vector()``
+- A vector is a sequence of data elements of the same type.
+
+### Creating vectors
+- What we have used here is the **concatenation** operator which takes the arguments
+and places them in a vector in the order in which they were entered
+
+```{r echo=TRUE}
+x <- c(1,5,2, 6)
+x
+is.vector(x)
+```
+
+
+## Vectors in R
+
+A vector can only contain objects of the same class
+```{r echo=TRUE}
+a <- c(1,3,4.1,7,-1,15) # numeric vector
+a
+b <- c("one","two","three", "4") # character vector
+b
+c <- c("one","two","three", 4) # same as above?
+c
+d <- c(FALSE, TRUE,TRUE,FALSE,TRUE,FALSE) #logical vector
+d
+```
+
+## Vector arithmetic
+- We can do arithmetic with vectors in a similar manner as we do with integers.
+- When we use operators we are doing something element by element or **elementwise**.
+
+```{r echo=TRUE}
+#Lets retrieve x first and then add to the new vector y
+x
+y <- c(1,6,4,8)
+x+y
+2*y
+```
+
+## Elementwise
+It is important to remember what happens when we consider an ``elementwise``
+operation
+
+```{r echo=TRUE}
+x*y
+x/y
+x
+y
+x%%y #what happens here? remainder? divisor>dividend?
+```
+
+## Recycling
+- We do have to be careful when performing arithmetic operations on vectors.
+- There is a concept called **recycling** and this happens when 2 vectors do not have the same length
+
+### Example
+```{r echo=TRUE}
+z<- c(1,2 ,6 ,8, 9, 10)
+length(x)
+length(z)
+#x: 1 5 2 6
+x+z
+```
+
+
+## Recycling
+- Intuition would make us think that we could not perform this operation when the length of both vectors are not the same.
+- However what R does is it ``rewrites x`` such that we have ``x <‐ c(1 , 5, 2, 6 , 1, 5)``.
+- This is called recycling, when R makes the shorter vector longer by repeating elements in the order they are listed in.
+
+```{r echo=TRUE}
+c(1 , 5, 2, 6 , 1, 5) + z
+```
+
+## Functions on vectors
+- There are various functions that we can run over a vector and as we continue on
+we will learn more about these functions.
+- One of the simplest functions can help us with knowing information about
+Recycling that we encountered before. This is the ``length()`` function
+- Then length vector is very important with the writing of functions which we will
+get to in a later unit.
+- We can use ``any()`` and ``all()`` in order to answer logical questions about elements
+
+```{r echo=TRUE}
+any(x>3)
+all(x>3)
+```
+
+## Built in functions
+- There are various other functions that can be run on vectors, and some you are already familiar with them.
+- ``mean()`` finds the arithmetic mean of a vector.
+- ``median()`` finds the median of a vector.
+- ``sd()`` and ``var()`` finds the standard deviation and variance of a vector respectively.
+- ``min()`` and ``max()`` finds the minimum and maximum of a vector respectively.
+- ``sort()`` returns a vector that is sorted.
+- ``summary()`` returns a 5 number summary of the numbers in a vector.
+```{r echo=TRUE}
+#For example, finding the mean of vector x
+mean(x)
+```
+
+
+## which() function
+- Some functions help us work with the data more to return values in which we are interested in.
+- For example, above we asked if any elements in vector x were greater than 3.
+- The ``which()`` function will tell us the elements that are.
+
+```{r echo=TRUE}
+which(x>3)
+```
+
+
+## Vector indexing
+- We can call specific elements of a vector by using the following:
+  * ``x[]`` is a way to call up a specific element of a vector.
+  * ``x[1]`` is the first element.
+  * ``x[3]`` is the third element.
+  * ``x[‐3]`` is a vector with everything but the third element.
+
+## Working with vectors
+```{r echo=TRUE}
+#List elements to make sure we have what we need
+x[3]
+x[-3]
+```
+### Replacing values
+- We have seen how to subtract an element from a vector but we can use the same
+information to place it back in.
+- We start with the same vector x that we started with.
+```{r echo=TRUE}
+x
+x<-x[-3]
+x
+```
+
+## Working with vectors
+### Inserting values
+We can then add the original element back in
+```{r echo=TRUE}
+x <- c(x[1:2], 2, x[3])
+x
+```
+
+### Indexing with Booleans
+- Before we used ``any(x > 3)`` and ``which(x > 3)``.
+- Now we can see not only their position in the vector, but indexing allows us to return their values.
+
+```{r echo=TRUE}
+x[x > 3]
+```
+
+
+## Naming vector elements
+- With vectors it can be important to assign names to the values.
+- Then when doing plots or considering maximum and minimums, instead of being given a
+numerical place within the vector we can be given a specific name of what that value
+represents.
+- For example say that vector x represents the number of medications of 4 unique patients.
+- We could then use the ``name()`` function to assign names to the values
+
+```{r echo=TRUE}
+x
+names(x)
+names(x) <- c("Patient A", "Patient B", "Patient C", "Patient D")
+x
+```
+
+# Exercise: vectors
+## Exercises
+1. Using a well commented R script, create a vector of the numbers ``1,3,5,2,4,11,15,13,21`` using the function ``assign()`` and then use it to perform the following tasks;
+  a. Find the length of the vector created
+  b. What type of data is this vector?
+  c. Sort the vector in both ascending and descending order
+  d. Select the third, fourth and last value of the vector
+- ``Hint: assign("vec",c(6,10))``
+2. Using a built-in fuction ``rep()``, replicate the numbers 1 to 6 two times in a vector named ``test2``. 
+- ``Hint:y <-rep(c(1:2),each = 2) or z<-rep(1:2,times = 3)``
+3. The vector named ``test2`` is currently an ``integer`` type, coerce the data to character type using the function ``as.character()``.
+
+# Lists
+  
+## What is a List?
+- Within R a list is a structure that can combine objects of different types.
+- We will learn how to create and work with lists in this section.
+
+### Creating Lists
+- A list is actually a vector but it does differ in comparison to the other types of vectors which we have been using in this course.
+  * Other vectors are _atomic vectors_
+  * A list is a type of vector called a _recursive vector_.
+  
+### An Example database
+- We first consider a patient database where we want to store their
+  * Name
+  * Amount of bill due
+  * A Boolean indicator of whether or not they have insurance.
+
+
+## Types of information
+We then have 3 types of information here:
+
+- character
+- numerical
+- logical
+
+### Single patient
+To create a list of one patient we say
+```{r echo=TRUE}
+a <-list(name="Angela", owed="75", insurance=TRUE)
+a
+```
+
+## Indexing
+- Notice that unlike a typical vector this prints out in multiple parts.
+- This also allows us to help with indexing as we will see later.
+
+### Lists of lists
+- We could then create a list for all of our patients.
+- Our database would then be a list of all of these individual lists.
+
+### List operations
+- With vectors, arrays and matrices, there was really only one way to index them.
+- However with lists there are multiple ways:
+
+## List indexing
+```{r echo=TRUE}
+a[["name"]]
+a[[1]]
+a$name
+#double vs single brackets
+a[1] #single bracket
+class(a[1])#single bracket
+```
+
+
+## List indexing
+```{r echo=TRUE}
+a[[1]] #double bracket
+class(a[[1]]) #double bracket
+```
+
+- With the single bracket we are returned another list.
+- With the double bracket we are returned an element in the original class of what kind of data
+we entered.
+- Depending on your goals you may want to use single or double brackets.
+
+## Adding and Subtracting elements
+- With a list we can always add more information to it.
+```{r echo=TRUE}
+a$age <-31
+a
+```
+
+## Adding and subtracting elements
+- In order to delete an element from a list we set it to NULL.
+```{r echo=TRUE}
+a$owed <- NULL
+a
+```
+
+### List components and values
+- To know what kind of information is included in a list, type
+```{r echo=TRUE}
+names(a)
+```
+
+## Unlisting
+- To find the values of things we could go ahead and unlist them
+```{r echo=TRUE}
+a.un <- unlist(a)
+a.un
+class(a.un)
+```
+
+- If there is ``Character`` data in the original list that unlisted everything will be in character
+format.
+- If your list contained all numerical elements then the class would be numerical.
+
+## Matrices
+- This is a a **two-dimentional**, homogenous data structure in R. i.e. it has rows and columns
+- A matrix can store data of single basic type (numeric, logical, character e.t.c)
+- Thus, it can be a combination of two or more vectors
+- We can create a matrix using the function ``matrix()`` and the syntax is 
+$$matrix(data,byrow,nrow,ncol,dimnames)$$
+- **data**: data contains the elements in the R matrix 
+- **nrow/ncol**: number of rows or columns
+- **byrow** : logical variable. Matrices are by default column-wise, byrow=TRUE, it does row-wise
+- **dimnames**: takes two character arrays as input for row names and column names
+
+
+## Using ``matrix()`` function
+```{r echo=TRUE}
+#Example
+mat1.data<-c(1:9)
+mat1<-matrix(mat1.data, nrow=3, ncol=3, byrow=TRUE)
+mat1
+#Not neccessary to always specify nrow and ncol, only one is ok
+mat2.data<-c(10:18)
+mat2<-matrix(mat2.data,nrow=3)
+mat2
+```
+
+
+## Using ``rbind()`` or ``cbind()`` function
+- We can create mtrix in R by combining rows or columns as follows:
+```{r echo=TRUE}
+mat3.data1<-c(1,2,3)
+mat3.data2<-c(4,5,6)
+mat3.data3<-c(7,8,9)
+mat3<-cbind(mat3.data1,mat3.data2,mat3.data3)
+mat3
+```
+- Ex: Create a matrix using the ``dim()`` function. Try this;
+```{r echo=TRUE}
+    #mat4<-c(1:12);
+  #dim(mat4)<-c(4,3);
+  #mat4
+```
+
+# Dataframes
+## Dataframes in R
+- In most cases, we are likely to use the data structure called a **dataframe**.
+- It is the most commonly used data structure in R
+- This is similar to a matrix in appearance however we can have multiple types of data in it like a list.
+- Used to store tabular data
+- More general than a matrix, has different columns and can have
+different modes (numeric, character, factor, etc.)
+- The first row is represented by **header**. 
+- The header is given by the list component name. Each column can store the **different datatype** which is called a **variable** and each row is an observation across multiple variables
+- Each column must contain the same type of data or R will most likely default to character for that column.
+- It is very important that you become proficient in working with data frames in order to fully understand data analysis.
+
+## Example
+Consider the following 
+```{r, fig.align='center', out.width="30%", echo=FALSE}
+knitr::include_graphics(path="C:/Users/HP/OneDrive/alborada_RCourse/df1.jpg")
+```
+- This is not regarded as a dataframe because here price store is divided into two parts. 
+- Rearranging the data by taking **product** as one variable and **price** as next variable and **store** as one other variable then it becomes **dataframe**.
+```{r, fig.align='center', out.width="30%", echo=FALSE}
+knitr::include_graphics(path="C:/Users/HP/OneDrive/alborada_RCourse/df2.jpg")
+```
+
+## Creating dataframes
+- We usually create a dataframe with vectors.
+- We can also load dataframes in R using functions like ``read.table()`` or ``read.csv()``
+- There are other methods of creating dataframes too
+```{r echo=TRUE}
+names <- c("Angela", "Shondra")
+ages <- c(27,36)
+insurance <- c(TRUE, T)
+patients <- data.frame(names, ages, insurance)
+patients
+```
+- **Ex:** Add a third patient to this list
+
+## Adding Rows or Columns
+- We may wish to add rows or columns to our data.
+- We can do this with:
+  * ``rbind()``
+  * ``cbind()``
+- For example using our patient data and say we wish to add another
+patient we could just do the following
+```{r echo=TRUE}
+p.three <- c(names="Ann Some", age=45, insurance=TRUE)
+rbind(patients, p.three)
+```
+## Adding Rows or Columns
+- There may be a warning (in the previous syntax) that serves as a reminder to always know what your ``data type`` is.
+- R may have read your data in as a factor when we want it as a character.
+```{r echo=TRUE}
+patients$names <- as.character(patients$names)
+patients <- rbind(patients, p.three)
+patients
+```
+
+
+## Adding Rows or Columns
+- Finally if we decided to then place another column of data in we could use the followign syntax
+```{r echo=TRUE}
+# Next appointments
+next.appt <- c("05/23/2022", "06/14/2022", "08/25/2022")
+#Let R know these are dates
+next.appt <- as.Date(next.appt, "%m/%d/%Y")
+next.appt
+```
+
+## Adding Rows or Columns
+- Using the ``cbind`` function, we now have
+```{r echo=TRUE}
+patients <-cbind(patients, next.appt)
+patients
+```
+
+
+## Attributes of dataframe
+- There are four attributes of dataframes
+  + length
+  + dimension
+  + name
+  + class
+- Lets check whether ``patients`` is a dataframe
+```{r echo=TRUE}
+str(patients)
+```
+
+  
+## Check the attribute of dataframe
+```{r echo=TRUE}
+names(patients)
+dim(patients)
+length(patients)
+# take only one row
+head(patients, n=1)
+```
+  
+
+## Accessing dataframes
+- In order to best consider accessing of data frames we will use some built in data
+from R.
+
+```{r echo=TRUE}
+library(datasets)
+titanic <- data.frame(Titanic) 
+colnames(titanic)# Variables in Titanic dataframe
+# Preview into data
+titanic[1:2,]
+```
+
+
+## Accessing dataframes
+
+```{r echo=TRUE}
+# Preview into data
+head(titanic)
+# Indexing : same as matrices; 
+# accessing age information
+titanic[,3]
+```
+
+
+
+## Other ways of creating dataframes
+
+```{r echo=TRUE}
+#method 2
+df<-data.frame(test = 1:6, bar = c(T, T, F, F, T, T))
+#method 3
+x <- c(1,3,5,7,11)
+y <- c("a","b","c","d","e")
+df1 <- data.frame(x=x, y=y)
+#does this work?
+df2 <- data.frame(x, y)
+```
+
+
+## Printing dataframes
+```{r echo=TRUE}
+print(df)
+print(df1)
+```
+
+## Printing dataframes
+```{r echo=TRUE}
+print(df2)
+# to checck class and structure of the dataframe
+class(df) #what of df1, df2?
+str(df1) #what of df, df2?
+```
+
+## Creating a dataframe with numerical as well as factor columns 
+- To create a dataframe with numerical as well as factor columns in R, we simply need to add factor function before factor columns and numerical columns will be created without mentioning any specific characteristics. 
+- The values of numerical columns just need to be numerical in nature
+```{r echo=TRUE}
+#lets sample 4 teenagers randomly
+Sex<-factor(sample(c("Male", "Female"),4, replace=TRUE ))
+Age<-sample(13:19,4)
+df3<-data.frame(Sex, Age)
+df3
+```
+
+## Tibbles in R
+- Previously we have worked with data in the form of
+  * Vectors
+  * Lists
+  * Matrices
+  * Dataframes
+- **Tibbles** are a new modern data frame.
+- It keeps many important features of the original dataframe.
+- It removes many of the outdated features.
+- **We will learn more about Tibbles in the coming sessions**
+
+
+# Exercises: dataframes
+### Ex. 1
+Create the following dataframe, hence invert the variable ``Sex`` for all individuals.
+```{r, fig.align='center', out.width="20%", echo=FALSE}
+knitr::include_graphics(path="C:/Users/HP/OneDrive/alborada_RCourse/table1.png")
+```
+
+### Ex. 2
+Create this data frame (make sure you import the variable ``Working`` as character and not factor).
+```{r, fig.align='center', out.width="15%", echo=FALSE}
+knitr::include_graphics(path="C:/Users/HP/OneDrive/alborada_RCourse/table2.png")
+```
+- Add this data frame column-wise to the previous one.
+  a. How many rows and columns does the new data frame have?
+  b. What class of data is in each column?
+
+## Exercises: dataframes
+### Ex. 3
+Check what class of data is the (built-in data set) state.center and convert it to data frame.
+
+### Ex. 4
+Create a simple data frame from 3 vectors. Order the entire data frame by the first column.
+
+### Ex. 5
+Create a data frame from a matrix of your choice, change the row names so every row says id_i (where i is the row number) and change the column names to variable_i (where i is the column number). i.e., for column 1 it will say variable_1, and for row 2 will say id_2 and so on.
+
+### Solutions available
+
+# RStudio project
+
+## Creating an analysis project in RStudio
+- Using R Studio to create a Project - From an existing directory
+- Go to ``File -> New Project`` then follow instructions to create  new project
+- Every time you open the project, it will upload all the files associated with the project.
+
+```{r, fig.align='center', out.width="65%", echo=FALSE}
+knitr::include_graphics(path="C:/Users/HP/OneDrive/alborada_RCourse/newproject.jpg")
+```
