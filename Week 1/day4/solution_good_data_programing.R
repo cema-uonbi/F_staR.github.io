@@ -1,45 +1,8 @@
----
-title: "Good data programming solution"
-author: "Ken Mwai"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: false
-    number_sections: false
-    theme: spacelab
-    highlight: tango
-includes:
- css: style.css
----
-
-```{r setup, include=FALSE}
+## ----setup, include=FALSE--------------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE)
-```
 
 
-### Data loading {.tabset .tabset-fade .tabset-pills}
-#### Task 1
-
-::: {.task}
-- Create a project folder with (data, code ,result , ... folders) 
-
-- Use the mtcars dataset within R and check the structure
-
-  - Take a first look at the data. Useful functions are  
-   `dim()`, `head()`, `str()` and `summary()`.
-   
-- Remember to use good programming approach
-:::
-
-#### Step 1
-
-- Create the data,results, code folders
-- Create an r_script and save it in the code folder
-
-#### Step 2 - R Script
-
-```{r step2}
+## ----step2, warning=FALSE, message=FALSE-----------------------------------------
 #----------------------------------------------
 ## f_StaR Good programming skills
 ## Author: Ken Mwai - April 2022
@@ -49,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #----------------------------------------------
 library(stats)
 library(dplyr)
+library(janitor)
 #----------------------------------------------
 # 1 - Source Data
 #----------------------------------------------
@@ -75,4 +39,12 @@ str(df1)
 #' 3 - The summary statistics of the data
 #----------------------------------------------
 summary(df1)
-```
+
+#----------------------------------------------
+#' 4 - The duplicates of the gear variable
+#----------------------------------------------
+janitor::get_dupes(df1, gear)
+
+## Another way of doing it
+df1 %>% get_dupes(gear)
+
